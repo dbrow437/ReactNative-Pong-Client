@@ -3,11 +3,25 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 
 import openSocket from 'socket.io-client';
 
-const socket = openSocket('https://pong-server-maxhoa.c9users.io');
+// const socket = openSocket('https://pong-server-maxhoa.c9users.io');
 
+const socket = openSocket('http://54.186.153.51:8080');
 const api_url = 'http://54.187.164.83:8080/api/hellos/Hello';
 
 export default class App extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            room: ""
+        }
+
+        socket.on('user joined', (data) => {
+            console.log('user joined');
+            this.setState({room: data})
+          });
+    }
+
   render() {
     function a_hello(){
         let hi = '';
@@ -21,6 +35,8 @@ export default class App extends React.Component {
             <Text></Text>
         )
     }
+
+
     function a_ping(){
         socket.emit('pinged', function (data) {
             console.log(data); // data will be 'woot'
@@ -30,7 +46,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Pong 1618 Week 1 - React Native App</Text>
-        <Text>Best Group</Text>
+        <Text>{this.state.room}</Text>
         <Text>Tap 'Hello' below...</Text>
         <Button
           onPress={a_hello}
